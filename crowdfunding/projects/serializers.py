@@ -22,6 +22,7 @@ class ProjectSerializer(serializers.Serializer):
     is_open = serializers.BooleanField()
     date_created = serializers.DateTimeField()
     owner = serializers.ReadOnlyField(source='owner.id')
+    category = serializers.CharField(max_length=50)
     
     def create(self, validated_data):
         return Project.objects.create(**validated_data)

@@ -2,6 +2,13 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 # Create your models here.
+class Category(models.Model):
+    title = models.CharField(max_length=50, unique=True)
+
+    def __str__(self) -> str:
+        return self.name
+  
+
 class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -13,6 +20,12 @@ class Project(models.Model):
         get_user_model(),
         on_delete=models.CASCADE,
         related_name='owner_projects'
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete = models.SET_NULL,
+        null= True,
+        blank = True,              
     )
 
 class Pledge(models.Model):
@@ -29,3 +42,4 @@ class Pledge(models.Model):
         on_delete=models.CASCADE,
         related_name='supporter_pledges'
     )
+
