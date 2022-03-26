@@ -65,6 +65,6 @@ class Pledge(models.Model):
 class Comment(BaseModel):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="comments")  
-    body = models.TextField
+    body = models.TextField()
     visible = models.BooleanField(default=True)
 
