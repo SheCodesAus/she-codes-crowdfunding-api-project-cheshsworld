@@ -1,9 +1,11 @@
+from unicodedata import name
 from django.contrib.auth import get_user_model
 from django.db import models
 
 # Create your models here.
 class Category(models.Model):
-    title = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True)
 
     def __str__(self) -> str:
         return self.name
@@ -25,7 +27,8 @@ class Project(models.Model):
         Category,
         on_delete = models.SET_NULL,
         null= True,
-        blank = True,              
+        blank = True, 
+        related_name='projects'             
     )
 
 class Pledge(models.Model):

@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Project, Pledge
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer
+from .models import Project, Pledge, Category
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, CategorySerializer
 from django.http import Http404
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
 from .permissions import IsOwnerOrReadOnly
 
 class PledgeList(APIView):
@@ -79,4 +79,6 @@ class ProjectDetail(APIView):
             return Response(serializer.errors, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-            
+class CategoryList(generics.ListCreateAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
