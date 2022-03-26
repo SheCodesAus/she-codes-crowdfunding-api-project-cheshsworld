@@ -31,6 +31,9 @@ class ProjectList(APIView):
 
     def get(self, request):
         projects = Project.objects.all()
+        is_open = request.query_params.get('is_open', None)
+        if is_open:
+            projects = projects.filter(is_open=is_open)
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
