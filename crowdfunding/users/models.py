@@ -3,6 +3,8 @@ from django.contrib.auth import  get_user_model
 from django.db import models
 from django.dispatch import receiver
 
+User = get_user_model
+
 class CustomUser(AbstractUser):
     profile_image = models.URLField(null = True, blank = True)
     bio = models.TextField(max_length=200, null = True)
@@ -31,3 +33,5 @@ class Message(models.Model):
     sent_at = models.DateField()
     read_at = models.DateField(null = True)
     body = models.TextField()
+
+

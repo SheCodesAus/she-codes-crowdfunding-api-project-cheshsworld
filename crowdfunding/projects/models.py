@@ -1,6 +1,8 @@
-from unicodedata import name
+from abc import abstractclassmethod
 from django.contrib.auth import get_user_model
 from django.db import models
+
+User = get_user_model()
 
 # Create your models here.
 class Category(models.Model):
@@ -9,6 +11,14 @@ class Category(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class BaseModel(models.Model):
+    create_at = models.DateTimeField(auto_now_add=True)
+    modiefied_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
   
 
 class Project(models.Model):
@@ -31,6 +41,10 @@ class Project(models.Model):
         related_name='projects'             
     )
 
+    def __str__(self) -> str:
+        return self.title
+
+
 class Pledge(models.Model):
     amount = models.IntegerField()
     comment = models.CharField(max_length=200)
@@ -45,4 +59,12 @@ class Pledge(models.Model):
         on_delete=models.CASCADE,
         related_name='supporter_pledges'
     )
+
+
+
+class Comment(BaseModel):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="comments")  
+    body = models.TextField
+    visible = models.BooleanField(default=True)
 

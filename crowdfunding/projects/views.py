@@ -1,10 +1,16 @@
+from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Project, Pledge, Category
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, CategorySerializer
-from django.http import Http404
 from rest_framework import status, permissions, generics
-from .permissions import IsOwnerOrReadOnly
+from .models import Project, Pledge, Category, Comment
+from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
+from .serializers import (
+    CommentSerializer, 
+    ProjectSerializer,
+    PledgeSerializer, 
+    ProjectDetailSerializer, 
+    CategorySerializer,
+    )
 
 class PledgeList(APIView):
     
@@ -85,3 +91,35 @@ class ProjectDetail(APIView):
 class CategoryList(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+class CategoryDetailApi(generics.RetrieveUpdateDestroyAPIView):
+    permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    
+class CommentListApi(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Comment.objects.filter( visible=True)
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class CommentDetailApi(generics.RetrieveUpdateDestroyAPIView):
+    permissions_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+    queryset = Comment.objects.filter( visible=True)
+    serializer_class = CommentSerializer
+
+    
+class ProjectCommentListApi(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # queryset = Comment.objects.filter( visible=True)
+    serializer_class = CommentSerializer
+
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user,project_id=self.kwargs.get('pk'))
+
+    def get_queryset(self):
+        return Comment.objects.filter(project_id=self.kwargs.get('pk'))
