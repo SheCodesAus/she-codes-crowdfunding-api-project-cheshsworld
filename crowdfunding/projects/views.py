@@ -99,7 +99,7 @@ class CategoryDetailApi(generics.RetrieveUpdateDestroyAPIView):
 
     
 class CommentListApi(generics.CreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     queryset = Comment.objects.filter( visible=True)
     serializer_class = CommentSerializer
 
