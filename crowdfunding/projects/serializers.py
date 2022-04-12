@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from django.db.models import Sum
 
 from .models import Category, Project, Pledge, Comment
 
@@ -10,6 +11,7 @@ class PledgeSerializer(serializers.Serializer):
     amount = serializers.IntegerField()
     comment = serializers.CharField(max_length=200)
     anonymous = serializers.BooleanField()
+    date_created = serializers.ReadOnlyField()
     supporter = serializers.SlugRelatedField(
         slug_field= 'username', 
         queryset= get_user_model().objects.all()
@@ -30,9 +32,15 @@ class ProjectSerializer(serializers.Serializer):
     goal = serializers.IntegerField()
     image = serializers.URLField()
     is_open = serializers.BooleanField()
-    date_created = serializers.DateTimeField()
+    date_created = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.id')
     category = serializers.SlugRelatedField(slug_field='slug', queryset=Category.objects.all())
+    total_pledged = serializers.SerializerMethodField()
+
+    def get_total_pledged(self, obj):
+        return Project.objects.filter(pk=obj.id).annotate(
+            total_pledged=Sum('pledges__amount')
+        )[0].total_pledged
     
     def create(self, validated_data):
         return Project.objects.create(**validated_data)
@@ -75,6 +83,8 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.category = validated_data.get('category', instance.category)
         instance.save()
         return instance
+
+    
 
 class CategorySerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()

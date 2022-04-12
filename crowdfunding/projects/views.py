@@ -16,13 +16,16 @@ class PledgeList(APIView):
     
     def get(self, request):
         pledges = Pledge.objects.all()
+        order_by = request.query_params.get('order_by', None)
+        if order_by:
+            pledges = pledges.order_by(order_by)
         serializer = PledgeSerializer(pledges, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         serializer = PledgeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(supporter=request.user)
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
