@@ -31,11 +31,14 @@ DEBUG = os.environ.get('DJANGO_DEBUG') != 'False'
 
 ALLOWED_HOSTS = ['*']
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 # Application definition
 
 INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
+    'corsheaders',
     'users.apps.UsersConfig',
     'rest_framework',
     'rest_framework.authtoken',
@@ -61,6 +64,7 @@ REST_FRAMEWORK = {
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
