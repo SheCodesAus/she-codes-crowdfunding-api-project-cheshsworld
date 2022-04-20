@@ -21,15 +21,17 @@ class CustomUserSerializer(serializers.Serializer):
     def create(self, validated_data):
         return CustomUser.objects.create(**validated_data)
 
-class MessageSerializer(serializers.Serializer):
-    receiver = serializers.ReadOnlyField(source='CustomUser.id')
-    sender = serializers.ReadOnlyField(source='CustomUser.id')
-    sent_at = serializers.DateField()
-    read_at = serializers.DateField()
-    body = serializers.CharField(max_length=200)
+class CustomerUserDetailSerializer(CustomUserSerializer):
 
-    def create(self, validated_data):
-        return Message.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        instance.profile_image = validated_data.get('profile_image', instance.profile_image)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.banner_image = validated_data.get('banner_image', instance.banner_image)
+        instance.save()
+        return instance
+
+
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -67,3 +69,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class MessageSerializer(serializers.Serializer):
+    receiver = serializers.ReadOnlyField(source='CustomUser.id')
+    sender = serializers.ReadOnlyField(source='CustomUser.id')
+    sent_at = serializers.DateField()
+    read_at = serializers.DateField()
+    body = serializers.CharField(max_length=200)
+
+    def create(self, validated_data):
+        return Message.objects.create(**validated_data)
