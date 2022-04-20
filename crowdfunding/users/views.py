@@ -1,10 +1,12 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
+# from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
 
-from .models import CustomUser
-from .serializers import CustomUserSerializer, RegisterSerializer
+from .models import CustomUser, Message
+from .serializers import CustomUserSerializer, RegisterSerializer,MessageSerializer
 
 
 
@@ -42,3 +44,11 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny,]
     queryset = CustomUser.objects.all()
+
+# class MessageView(generics.CreateAPIView):
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+#     # queryset = Message.objects.filter( visible=True)
+#     serializer_class = MessageSerializer
+
+#     def perform_create(self, serializer):
+#         serializer.save(author=self.request.user)

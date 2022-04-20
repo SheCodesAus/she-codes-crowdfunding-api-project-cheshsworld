@@ -17,6 +17,13 @@ Including another URLconf
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib import admin
+from drf_spectacular.views import (
+    SpectacularJSONAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
+
+from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     path("", include('projects.urls')),
@@ -25,4 +32,11 @@ urlpatterns = [
     path("api-token-auth/", obtain_auth_token, name='api_token_auth'),
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-]
+] + format_suffix_patterns(
+    [
+        path("schema/", SpectacularJSONAPIView.as_view(), name="schema"),
+        path("schema/swagger-ui", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+        path("schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+
+    ]
+)
