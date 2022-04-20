@@ -5,7 +5,8 @@ from rest_framework import status, permissions, generics
 from .models import Project, Pledge, Category, Comment
 from .permissions import IsOwnerOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (
-    CommentSerializer, 
+    CommentSerializer,
+    ProjectCommentSerializer, 
     ProjectSerializer,
     PledgeSerializer, 
     ProjectDetailSerializer, 
@@ -96,7 +97,7 @@ class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
 
 class CategoryDetailApi(generics.RetrieveUpdateDestroyAPIView):
-    permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permissions_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -115,10 +116,10 @@ class CommentDetailApi(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
 
     
-class ProjectCommentListApi(generics.CreateAPIView):
+class ProjectCommentListApi(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # queryset = Comment.objects.filter( visible=True)
-    serializer_class = CommentSerializer
+    serializer_class = ProjectCommentSerializer
 
 
     def perform_create(self, serializer):

@@ -47,10 +47,8 @@ class ProjectSerializer(serializers.Serializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field="username",
-        read_only="true",
-    )
+    author = serializers.SlugRelatedField(slug_field="username",read_only="true",)
+    # project = serializers.PrimaryKeyRelatedField(read_only="true",)
 
     class Meta:
         model = Comment
@@ -58,10 +56,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ProjectCommentSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field="username",
-        read_only="true",
-    )
+    author = serializers.SlugRelatedField(slug_field="username", read_only="true",)
+
     class Meta:
         model = Comment
         exclude = ["visible", "project"]
