@@ -23,7 +23,7 @@ from django.contrib import admin
 #     SpectacularSwaggerView,
 # )
 
-from rest_framework.urlpatterns import format_suffix_patterns
+# from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     path("", include('projects.urls')),
