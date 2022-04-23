@@ -32,10 +32,11 @@ urlpatterns = [
     path("api-token-auth/", obtain_auth_token, name='api_token_auth'),
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-] + format_suffix_patterns(
+] 
+# + format_suffix_patterns(
     # [
     #     path("schema/", SpectacularJSONAPIView.as_view(), name="schema"),
     #     path("schema/swagger-ui", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     #     path("schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     # ]
-)
+# )
