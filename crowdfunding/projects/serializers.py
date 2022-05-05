@@ -1,3 +1,4 @@
+from ast import Delete
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.db.models import Sum
@@ -12,10 +13,10 @@ class PledgeSerializer(serializers.Serializer):
     comment = serializers.CharField(max_length=200)
     anonymous = serializers.BooleanField()
     date_created = serializers.ReadOnlyField()
-    supporter = serializers.SlugRelatedField(
-        slug_field= 'username', 
-        queryset= get_user_model().objects.all()
-    )
+    # supporter = serializers.SlugRelatedField(
+    #     slug_field= 'username', 
+    #     queryset= get_user_model().objects.all()
+    # )
     project_id = serializers.IntegerField()
     supporter = serializers.ReadOnlyField(source='supporter.id')
 
